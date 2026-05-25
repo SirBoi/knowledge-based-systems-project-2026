@@ -8,18 +8,20 @@ public class Driver {
     private int totalDailyBreakTime;
     private int hardBrakingCount;
     private int hardAccelerationCount;
+    private long lastRestTimestamp;
     private DrivingStyle drivingStyle;
     
     public Driver() {
     }
 
     public Driver(int continuousDrivingTime, int totalDailyDrivingTime, int totalDailyBreakTime,
-            int hardBrakingCount, int hardAccelerationCount, DrivingStyle drivingStyle) {
+            int hardBrakingCount, int hardAccelerationCount, long lastRestTimestamp, DrivingStyle drivingStyle) {
         this.continuousDrivingTime = continuousDrivingTime;
         this.totalDailyDrivingTime = totalDailyDrivingTime;
         this.totalDailyBreakTime = totalDailyBreakTime;
         this.hardBrakingCount = hardBrakingCount;
         this.hardAccelerationCount = hardAccelerationCount;
+        this.lastRestTimestamp = lastRestTimestamp;
         this.drivingStyle = drivingStyle;
     }
 
@@ -63,6 +65,14 @@ public class Driver {
         this.hardAccelerationCount = hardAccelerationCount;
     }
 
+    public long getLastRestTimestamp() {
+        return lastRestTimestamp;
+    }
+
+    public void setLastRestTimestamp(long lastRestTimestamp) {
+        this.lastRestTimestamp = lastRestTimestamp;
+    }
+
     public DrivingStyle getDrivingStyle() {
         return drivingStyle;
     }
@@ -75,7 +85,7 @@ public class Driver {
     public String toString() {
         return "Driver [continuousDrivingTime=" + continuousDrivingTime + ", totalDailyDrivingTime="
                 + totalDailyDrivingTime + ", totalDailyBreakTime=" + totalDailyBreakTime + ", hardBrakingCount="
-                + hardBrakingCount + ", hardAccelerationCount=" + hardAccelerationCount + ", drivingStyle="
-                + drivingStyle + "]";
+                + hardBrakingCount + ", hardAccelerationCount=" + hardAccelerationCount + ", lastRestTimestamp="
+                + lastRestTimestamp + ", drivingStyle=" + drivingStyle + "]";
     }   
 }
