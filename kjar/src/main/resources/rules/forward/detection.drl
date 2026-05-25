@@ -1,0 +1,78 @@
+package rules.forward.detection
+
+import sbz.model.input.Vehicle
+import sbz.model.input.Road
+import sbz.model.input.Weather
+import sbz.model.input.Traffic
+import sbz.model.input.Driver
+import sbz.model.derived.RiskFactor
+
+rule "Speeding detection"
+when
+    $v : Vehicle(speed > speedLimit)
+then
+    insert(new RiskFactor("SPEEDING"));
+end
+
+rule "Slow driving on highway"
+when
+    $v : Vehicle(speed < (0.5 * speedLimit))
+    $r : Road(type == sbz.model.enums.RoadType.HIGHWAY)
+then
+    insert(new RiskFactor("SLOW_DRIVING"));
+end
+
+rule "Unsafe distance"
+when
+    $v : Vehicle(speed > 60, frontVehicleDistance < 20)
+then
+    insert(new RiskFactor("UNSAFE_DISTANCE"));
+end
+
+rule "Bad road condition speed mismatch"
+when
+    $v : Vehicle()
+    $r : Road(condition == sbz.model.enums.RoadConditionType.WET)
+    eval($v.getSpeed() > 80)
+then
+    insert(new RiskFactor("BAD_ROAD_SPEED"));
+end
+
+rule "Low visibility without lights"
+when
+    $v : Vehicle(lightsOn == false)
+    $w : Weather(foggy == true)
+then
+    insert(new RiskFactor("LOW_VISIBILITY"));
+end
+
+rule "Low visibility without lights - night"
+when
+    $v : Vehicle(lightsOn == false)
+    $w : Weather(isDay() == false)
+then
+    insert(new RiskFactor("LOW_VISIBILITY"));
+end
+
+rule "Traffic + high speed risk"
+when
+    $v : Vehicle(speed > 70)
+    $t : Traffic(density == sbz.model.enums.TrafficDensity.HIGH)
+then
+    insert(new RiskFactor("HIGH_TRAFFIC_RISK"));
+end
+
+rule "Brake system risk"
+when
+    $v : Vehicle(brakeCondition == sbz.model.enums.BrakeCondition.OVERHEATED 
+              || brakeCondition == sbz.model.enums.BrakeCondition.CRITICAL)
+then
+    insert(new RiskFactor("BRAKE_FAILURE_RISK"));
+end
+
+rule "Driver fatigue"
+when
+    $d : Driver(continuousDrivingTime > 120)
+then
+    insert(new RiskFactor("FATIGUE"));
+end

@@ -1,0 +1,39 @@
+package rules.forward.driver_behavior
+
+import sbz.model.input.Driver
+import sbz.model.derived.DriverCondition
+
+rule "Aggressive driver behavior"
+when
+    $d : Driver(hardBrakingCount > 3, hardAccelerationCount > 3)
+then
+    insert(new DriverCondition(false, true));
+end
+
+rule "Fatigued driver"
+when
+    $d : Driver(continuousDrivingTime > 120)
+then
+    insert(new DriverCondition(true, false));
+end
+
+rule "Very fatigued driver (long shift + no rest)"
+when
+    $d : Driver(totalDailyDrivingTime > 9)
+then
+    modify($d) {
+        setContinuousDrivingTime(999)
+    }
+    insert(new DriverCondition(true, false));
+end
+
+rule "Safe driver"
+when
+    $d : Driver(
+        hardBrakingCount == 0,
+        hardAccelerationCount == 0,
+        continuousDrivingTime < 60
+    )
+then
+    insert(new DriverCondition(false, false));
+end

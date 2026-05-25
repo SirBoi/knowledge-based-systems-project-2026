@@ -1,0 +1,56 @@
+package rules.forward.recommendations
+
+import sbz.model.derived.RiskFactor
+import sbz.model.derived.DriverCondition
+import sbz.model.output.Recommendation
+import sbz.model.output.Action
+import sbz.model.enums.RiskLevel
+
+rule "Speeding recommendation"
+when
+    $r : RiskFactor(type == "SPEEDING")
+then
+    insert(new Recommendation("Smanji brzinu"));
+end
+
+rule "Unsafe distance recommendation"
+when
+    $r : RiskFactor(type == "UNSAFE_DISTANCE")
+then
+    insert(new Recommendation("Povećaj distancu"));
+end
+
+rule "Low visibility action"
+when
+    $r : RiskFactor(type == "LOW_VISIBILITY")
+then
+    insert(new Action("Uključi svjetla"));
+end
+
+rule "Fatigue recommendation"
+when
+    $r : RiskFactor(type == "FATIGUE")
+then
+    insert(new Recommendation("Napravite pauzu"));
+end
+
+rule "Brake failure warning"
+when
+    $r : RiskFactor(type == "BRAKE_FAILURE_RISK")
+then
+    insert(new Action("ODMAH ZAUSTAVI VOZILO"));
+end
+
+rule "Aggressive driving recommendation"
+when
+    $c : DriverCondition(aggressive == true)
+then
+    insert(new Recommendation("Smiri vožnju"));
+end
+
+rule "Fatigued driver warning"
+when
+    $c : DriverCondition(fatigued == true)
+then
+    insert(new Action("Obavezna pauza"));
+end
