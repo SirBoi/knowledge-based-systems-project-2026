@@ -1,13 +1,13 @@
-package sbz.model.derived;
+package sbz.model.output;
 
-public class RiskFactor {
+public class Action {
     private String type;
 
-    public RiskFactor() {
+    public Action(String type) {
+        this.type = type;
     }
 
-    public RiskFactor(String type) {
-        this.type = type;
+    public Action() {
     }
 
     public String getType() {
@@ -20,6 +20,6 @@ public class RiskFactor {
 
     @Override
     public String toString() {
-        return "RiskFactor [type=" + type + "]";
+        return "Action [type=" + type + "]";
     }
 }

@@ -1,13 +1,13 @@
-package sbz.model;
+package sbz.model.output;
 
 public class Recommendation {
-
     private String message;
-
-    public Recommendation() {}
 
     public Recommendation(String message) {
         this.message = message;
+    }
+
+    public Recommendation() {
     }
 
     public String getMessage() {
@@ -16,5 +16,10 @@ public class Recommendation {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "Recommendation [message=" + message + "]";
     }
 }
