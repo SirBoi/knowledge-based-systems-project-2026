@@ -1,0 +1,18 @@
+package sbz.service;
+
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import java.util.logging.Logger;
+ 
+public class EventListener extends DefaultAgendaEventListener {
+ 
+   private final static Logger LOGGER = Logger.getLogger(EventListener.class.getName());
+ 
+   @Override
+   public void afterMatchFired(AfterMatchFiredEvent event) {
+      Rule rule = event.getMatch().getRule();
+      LOGGER.info("Rule fired: " + rule.getName());
+      System.out.println("Rule fired: " + rule.getName());
+   }
+}

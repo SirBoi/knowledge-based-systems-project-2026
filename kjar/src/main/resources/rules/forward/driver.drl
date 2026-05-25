@@ -1,0 +1,15 @@
+package rules.forward
+
+import sbz.model.DriverState;
+import sbz.model.RiskLevel;
+import sbz.model.Recommendation;
+
+rule "Driver fatigue detection"
+when
+    $d : DriverState(continuousDrivingTime > 120)
+then
+    System.out.println("RULE: Driver fatigue detected");
+
+    insert(new RiskLevel(RiskLevel.Level.HIGH));
+    insert(new Recommendation("TAKE A BREAK"));
+end

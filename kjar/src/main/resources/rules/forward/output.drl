@@ -1,0 +1,19 @@
+package rules.forward
+
+import sbz.model.RiskLevel;
+import sbz.model.Recommendation;
+
+rule "Final decision output"
+when
+    $r : RiskLevel()
+then
+    System.out.println("FINAL RISK: " + $r.getLevel());
+
+    if ($r.getLevel().equals(RiskLevel.Level.HIGH)) {
+        insert(new Recommendation("REDUCE SPEED OR STOP"));
+    } else if ($r.getLevel().equals(RiskLevel.Level.MEDIUM)) {
+        insert(new Recommendation("DRIVE CAREFULLY"));
+    } else {
+        insert(new Recommendation("DRIVING IS SAFE"));
+    }
+end

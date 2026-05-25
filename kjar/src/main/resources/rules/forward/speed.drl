@@ -1,0 +1,13 @@
+package rules.forward
+
+import sbz.model.VehicleState;
+import sbz.model.RiskLevel;
+
+rule "Speeding detection"
+when
+    $v : VehicleState(speed > speedLimit)
+then
+    System.out.println("RULE: Speeding detected");
+
+    insert(new RiskLevel(RiskLevel.Level.HIGH));
+end

@@ -1,0 +1,15 @@
+package rules.forward
+
+import sbz.model.VehicleState;
+import sbz.model.RoadCondition;
+import sbz.model.RiskLevel;
+
+rule "Wet road + high speed risk"
+when
+    $v : VehicleState(speed > 70)
+    $r : RoadCondition(wet == true)
+then
+    System.out.println("RULE: Wet road risk");
+
+    insert(new RiskLevel(RiskLevel.Level.MEDIUM));
+end
