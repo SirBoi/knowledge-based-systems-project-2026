@@ -9,6 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import sbz.service.simulations.BasicSimulation;
+import sbz.service.simulations.CriticalSimulation;
+import sbz.service.simulations.DriverSimulation;
+import sbz.service.simulations.TrafficSimulation;
+import sbz.service.simulations.WeatherSimulation;
 
 @SpringBootApplication
 public class ServiceApplication implements CommandLineRunner {
@@ -24,7 +28,6 @@ public class ServiceApplication implements CommandLineRunner {
 		KieScanner scanner = ks.newKieScanner(container);
 		
 		scanner.start(1000);
-		System.out.println(container.getKieBaseNames());
 		
 		return container;
 	}
@@ -32,7 +35,11 @@ public class ServiceApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception
 	{
-		BasicSimulation.run();
+		// BasicSimulation.run();
+		// CriticalSimulation.run();
+		// DriverSimulation.run();
+		TrafficSimulation.run();
+		// WeatherSimulation.run();
 
 		System.out.println("\n > Simulation finished.");
 	}

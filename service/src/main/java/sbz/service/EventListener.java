@@ -12,7 +12,7 @@ public class EventListener extends DefaultAgendaEventListener {
    @Override
    public void afterMatchFired(AfterMatchFiredEvent event) {
       Rule rule = event.getMatch().getRule();
-      LOGGER.info("Rule fired: " + rule.getName());
+      // LOGGER.info("Rule fired: " + rule.getName());
       System.out.println("Rule fired: " + rule.getName());
    }
 }
