@@ -1,0 +1,89 @@
+package rules.backward;
+
+import sbz.model.input.Vehicle;
+import sbz.model.input.Road;
+import sbz.model.input.Weather;
+import sbz.model.enums.RoadConditionType;
+import sbz.model.enums.VisibilityLevel;
+
+query speedViolation()
+    Vehicle( speed > speedLimit )
+end
+
+query badRoad()
+    Road( condition == RoadConditionType.WET ||
+          condition == RoadConditionType.ICY )
+end
+
+query lowVisibility()
+    Weather( visibility == VisibilityLevel.LOW ||
+             visibility == VisibilityLevel.CRITICAL )
+end
+
+query unsafeDistance()
+    Vehicle( frontVehicleDistance < 15 )
+end
+
+query isRisk(String risk)
+    eval("SPEEDING".equals(risk))
+    speedViolation()
+    or
+    eval("BAD_ROAD".equals(risk))
+    badRoad()
+    or
+    eval("LOW_VISIBILITY".equals(risk))
+    lowVisibility()
+    or
+    eval("UNSAFE_DISTANCE".equals(risk))
+    unsafeDistance()
+    or
+    eval("HIGH_RISK".equals(risk))
+    isRisk(risk : "SPEEDING")
+    or
+    eval("HIGH_RISK".equals(risk))
+    isRisk(risk : "BAD_ROAD")
+    or
+    eval("HIGH_RISK".equals(risk))
+    isRisk(risk : "LOW_VISIBILITY")
+    or
+    eval("COLLISION_RISK".equals(risk))
+    isRisk(risk : "SPEEDING")
+    or
+    eval("COLLISION_RISK".equals(risk))
+    isRisk(risk : "UNSAFE_DISTANCE")
+end
+
+rule "Trigger HIGH_RISK evaluation"
+when
+    isRisk(risk : "HIGH_RISK")
+then
+    System.out.println("HIGH_RISK CONFIRMED via backward chaining query");
+end
+
+rule "Trigger COLLISION_RISK evaluation"
+when
+    isRisk(risk : "COLLISION_RISK")
+then
+    System.out.println("COLLISION_RISK CONFIRMED via backward chaining query");
+end
+
+rule "Trigger SPEEDING evaluation"
+when
+    isRisk(risk : "SPEEDING")
+then
+    System.out.println("SPEEDING CONFIRMED via backward chaining query");
+end
+
+rule "Trigger BAD_ROAD evaluation"
+when
+    isRisk(risk : "BAD_ROAD")
+then
+    System.out.println("BAD_ROAD CONFIRMED via backward chaining query");
+end
+
+rule "Trigger LOW_VISIBILITY evaluation"
+when
+    isRisk(risk : "LOW_VISIBILITY")
+then
+    System.out.println("LOW_VISIBILITY CONFIRMED via backward chaining query");
+end

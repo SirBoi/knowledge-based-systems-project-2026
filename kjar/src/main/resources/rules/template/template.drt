@@ -1,0 +1,68 @@
+template header
+ruleName
+roadType
+roadCondition
+speedMode
+visibilityRequired
+speedValue
+speedFactor
+riskType
+minDistance
+
+package rules.template
+
+import sbz.model.input.Vehicle
+import sbz.model.input.Road
+import sbz.model.input.Weather
+import sbz.model.derived.RiskFactor
+import sbz.model.enums.RoadType
+import sbz.model.enums.RoadConditionType
+import sbz.model.enums.VisibilityLevel
+
+template "TemplateRules"
+
+rule "Speed rule - @{ruleName}"
+when
+    $v : Vehicle()
+    $r : Road(type == RoadType.@{roadType})
+
+    eval(
+        ("@{speedMode}" == "FIXED" && $v.getSpeed() > @{speedValue}) ||
+        ("@{speedMode}" == "FACTOR" && $v.getSpeed() > (@{speedFactor} * $v.getSpeedLimit()))
+    )
+then
+    insert(new RiskFactor("@{riskType}"));
+end
+
+rule "Road condition rule - @{ruleName}"
+when
+    $v : Vehicle()
+    $r : Road(condition == RoadConditionType.@{roadCondition})
+
+    eval($v.getSpeed() > (@{speedFactor} * $v.getSpeedLimit()))
+then
+    insert(new RiskFactor("@{riskType}"));
+end
+
+rule "Visibility rule - @{ruleName}"
+when
+    $v : Vehicle(lightsOn == false)
+    $w : Weather()
+    
+    eval(@{visibilityRequired} == 1 &&
+        ($w.getVisibility() == VisibilityLevel.LOW ||
+        $w.getVisibility() == VisibilityLevel.CRITICAL))
+then
+    insert(new RiskFactor("@{riskType}"));
+end
+
+rule "Distance safety rule - @{ruleName}"
+when
+    $v : Vehicle()
+    
+    eval($v.getFrontVehicleDistance() < @{minDistance})
+then
+    insert(new RiskFactor("@{riskType}"));
+end
+
+end template

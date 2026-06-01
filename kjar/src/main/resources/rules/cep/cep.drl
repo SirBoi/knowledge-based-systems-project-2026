@@ -1,0 +1,100 @@
+package rules.cep
+
+import sbz.model.events.HardBrakingEvent
+import sbz.model.events.SpeedingEvent
+import sbz.model.events.SpeedVariationEvent
+import sbz.model.events.DriverRestEvent
+import sbz.model.input.Vehicle
+import sbz.model.input.Weather
+import sbz.model.derived.RiskFactor
+
+declare HardBrakingEvent
+    @role( event )
+end
+
+declare SpeedingEvent
+    @role( event )
+end
+
+declare SpeedVariationEvent
+    @role( event )
+end
+
+declare DriverRestEvent
+    @role( event )
+end
+
+rule "Multiple hard braking in short time"
+when
+    accumulate(
+        $e : HardBrakingEvent() over window:time(10s),
+        $count : count($e)
+    )
+
+    eval($count >= 3)
+then
+    insert(new RiskFactor("CRITICAL_BEHAVIOR"));
+end
+
+rule "Repeated speeding events"
+when
+    accumulate(
+        $e : SpeedingEvent() over window:time(30s),
+        $count : count($e)
+    )
+
+    eval($count >= 3)
+then
+    insert(new RiskFactor("AGGRESSIVE_DRIVING"));
+end
+
+rule "Frequent speed variations"
+when
+    accumulate(
+        $e : SpeedVariationEvent() over window:time(60s),
+        $count : count($e)
+    )
+
+    eval($count >= 4)
+then
+    insert(new RiskFactor("UNSTABLE_DRIVING"));
+end
+
+rule "Fatigue with no rest and night conditions"
+when
+    $w : Weather(isDay() == false)
+    not DriverRestEvent() over window:time(2h)
+then
+    insert(new RiskFactor("CRITICAL_FATIGUE"));
+end
+
+rule "Continuous unsafe driving pattern"
+when
+    $v : Vehicle(speed > 80, frontVehicleDistance < 15)
+    
+    accumulate(
+        $e : SpeedingEvent() over window:time(2m),
+        $count : count($e)
+    )
+
+    eval($count >= 2)
+then
+    insert(new RiskFactor("CONTINUOUS_COLLISION_RISK"));
+end
+
+rule "Combined instability and aggressive pattern"
+when
+    accumulate(
+        $s : SpeedVariationEvent() over window:time(60s),
+        $varCount : count($s)
+    )
+
+    accumulate(
+        $b : HardBrakingEvent() over window:time(30s),
+        $brakeCount : count($b)
+    )
+
+    eval($varCount >= 3 && $brakeCount >= 2)
+then
+        insert(new RiskFactor("DANGEROUS_DRIVING_PATTERN"));
+end

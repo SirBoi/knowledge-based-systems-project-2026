@@ -13,6 +13,9 @@ import sbz.service.simulations.CriticalSimulation;
 import sbz.service.simulations.DriverSimulation;
 import sbz.service.simulations.TrafficSimulation;
 import sbz.service.simulations.WeatherSimulation;
+import sbz.service.simulations.BackwardSimulation;
+import sbz.service.simulations.CEPSimulation;
+import sbz.service.simulations.TemplateSimulation;
 
 @SpringBootApplication
 public class ServiceApplication implements CommandLineRunner {
@@ -38,8 +41,12 @@ public class ServiceApplication implements CommandLineRunner {
 		// BasicSimulation.run();
 		// CriticalSimulation.run();
 		// DriverSimulation.run();
-		TrafficSimulation.run();
+		// TrafficSimulation.run();
 		// WeatherSimulation.run();
+
+		// BackwardSimulation.run();
+		// CEPSimulation.run();
+		TemplateSimulation.run();
 
 		System.out.println("\n > Simulation finished.");
 	}

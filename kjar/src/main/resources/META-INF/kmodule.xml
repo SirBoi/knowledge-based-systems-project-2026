@@ -1,5 +1,5 @@
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="rules" packages="rules.*">
+    <kbase name="rules" packages="rules.forward, rules.cep, rules.template" eventProcessingMode="stream">
         <ksession name="basic-simulation"/>
     </kbase>
 </kmodule>

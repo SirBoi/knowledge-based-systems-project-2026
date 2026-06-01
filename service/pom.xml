@@ -67,6 +67,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-decisiontables</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>sbz</groupId>
 			<artifactId>kjar</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
